@@ -22,5 +22,10 @@ public class App
         list.dequeue();
         
         list.printList();
+        
+        list.dequeue();
+        
+        list.printList();
+        
     }
 }
