@@ -3,7 +3,8 @@ package com.wright.queue;
 import com.wright.queue.gui.GUI;
 
 /**
- * Hello world!
+ * 
+ * @author christopherwright
  *
  */
 public class App 

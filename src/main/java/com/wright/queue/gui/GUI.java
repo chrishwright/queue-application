@@ -5,31 +5,49 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.linkedlist.Queue;
+
+/**
+ * 
+ * @author christopherwright
+ *
+ */
 public class GUI {
     
     private static final Logger MS_LOG = Logger.getLogger(GUI.class.getName());
     
     private JFrame mainFrame;
-    private JButton button1;
-    private JButton button2;
+    private JButton createButton;
+    private JButton processButton;
+    private List<JLabel> labels;
+    private JTextArea textArea;
+    private JScrollPane jsp;
+    
+    private Queue<Integer> queue = new Queue<>();
+    
+    private static final String ENQUEUE = "enqueue";
+    private static final String DEQUEUE = "dequeue";
     
     public void init() {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+        javax.swing.SwingUtilities.invokeLater( () -> {
+                MS_LOG.info("Initializing GUI...");
                 initializeGUI();
-            }
         });
     }
     
     private void initializeGUI() {
-        MS_LOG.info("Initializing GUI...");
         
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -37,9 +55,11 @@ public class GUI {
             MS_LOG.error(e.getMessage());
         }
         
-        mainFrame = new JFrame("Undo Application");
+        mainFrame = new JFrame("Queue Application");
         mainFrame.setSize(600, 400);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        labels = Labels.getLabels();
         
         initializeButtons();
         addComponentsToFrame(mainFrame.getContentPane());
@@ -54,33 +74,98 @@ public class GUI {
         GridBagConstraints c = new GridBagConstraints();
         
         c.insets = new Insets(5, 5, 5, 5);
-        c.ipady = 200;
-        c.ipadx = 50;
-        c.gridheight = 2;
+        c.ipady = 30;
+        c.ipadx = 30;
+        
+        for (int i = 0; i < labels.size(); i++) {
+            c.gridx = i;
+            c.gridy = 0;
+            pane.add(labels.get(i), c);
+        }
+        
+        c.ipadx = 0;
+        c.ipady = 0;
         
         c.gridx = 0;
-        c.gridy = 0;
-        pane.add(button1, c);
+        c.gridy = 1;
+        pane.add(createButton, c);
         
         c.gridx = 1;
-        c.gridy = 0;
-        pane.add(button2, c);
+        c.gridy = 1;
+        pane.add(processButton, c);
+        
+        c.gridwidth = 3;
+        c.gridx = 2;
+        c.gridy = 1;
+        pane.add(jsp, c);
     }
     
     private void initializeButtons() {
-        button1 = new JButton("Create");
-        button2 = new JButton("Process");
+        createButton = new JButton("Create");
+        processButton = new JButton("Process");
         
-        mainFrame.add(button1);
-        mainFrame.add(button2);
+        mainFrame.add(createButton);
+        mainFrame.add(processButton);
         
-        button1.addActionListener(e -> {
-            MS_LOG.info("Button1 clicked...");
+        createButton.addActionListener(e -> {
+            MS_LOG.info("Create Button clicked...");
+            create();
         });
         
-        button2.addActionListener(e -> {
-            MS_LOG.info("Button2 clicked...");
+        processButton.addActionListener(e -> {
+            MS_LOG.info("Process Button clicked...");
+            process();
         });
+        
+        textArea = new JTextArea(12,19);
+        textArea.setEditable(false);
+        jsp = new JScrollPane(textArea, 
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
-
+    
+    private void create() {
+        queue.enqueue(getRandomNumber());
+        updateUI(ENQUEUE);
+    }
+    
+    private void process() {
+        queue.dequeue();
+        updateUI(DEQUEUE);
+    }
+    
+    private void updateUI(String type) {
+        
+        int index = queue.getSize() == 0 ? queue.getSize() : queue.getSize() - 1;
+        
+        switch(type) {
+            case ENQUEUE:
+                labels.get(index).setText(Integer.toString(queue.getBack()));
+                break;
+            case DEQUEUE:
+                index++;
+                labels.get(index).setText(null);
+                break;
+            default:
+                break;
+        }
+        
+        // then update the textArea
+        StringBuilder items = new StringBuilder();
+        textArea.setText("");
+        
+        for (JLabel label : labels) {
+            if (label.getText() != null) {
+                items.append(label.getText() + "\n");
+            }
+        }
+        
+        textArea.setText(items.toString());
+    }
+    
+    private int getRandomNumber() {
+        Random rand = new Random();
+        int tezt = rand.nextInt(200);
+        return tezt;
+    }
 }

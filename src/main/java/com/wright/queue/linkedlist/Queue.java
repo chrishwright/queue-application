@@ -18,6 +18,7 @@ public class Queue<T> {
     
     private int size = 0;
     private Node<T> list = null;
+    private Node<T> tail = null; // we need the tail to update the GUI with item at end of queue
     
     /**
      * adds a node to the back of the queue.
@@ -26,6 +27,7 @@ public class Queue<T> {
     public void enqueue(T data) {
         if (size == 0) {
             list = new Node<>(data);
+            tail = list;
             size++;
             return;
         }
@@ -37,6 +39,7 @@ public class Queue<T> {
         }
         
         pointer.setNextNode(new Node<T>(data));
+        tail = pointer.getNextNode();
         size++;
     }
     
@@ -49,6 +52,7 @@ public class Queue<T> {
         }
         
         list = list.getNextNode();
+        size--;
     }
     
     /**
@@ -61,6 +65,18 @@ public class Queue<T> {
             ms_log.info(pointer.getData());
             pointer = pointer.getNextNode();
         }
+    }
+    
+    public T peek() {
+        return list.getData();
+    }
+    
+    public T getBack() {
+        return tail.getData();
+    }
+    
+    public int getSize() {
+        return size;
     }
 
 }
