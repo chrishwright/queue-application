@@ -4,6 +4,8 @@ import java.util.EmptyStackException;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.exceptions.QueueIsFullException;
+
 /**
  * 
  * @author christopherwright
@@ -30,6 +32,9 @@ public class Queue<T> {
             tail = list;
             size++;
             return;
+        }
+        else if (size >= 5) {
+            throw new QueueIsFullException("The queue is full.");
         }
         
         Node<T> pointer = list;
@@ -67,14 +72,26 @@ public class Queue<T> {
         }
     }
     
+    /**
+     * returns the first item in the list
+     * @return the first item in the list
+     */
     public T peek() {
         return list.getData();
     }
     
+    /**
+     * returns the item in the back of the list
+     * @return the item in the back of the list
+     */
     public T getBack() {
         return tail.getData();
     }
     
+    /**
+     * returns the size of the list
+     * @return size of the list
+     */
     public int getSize() {
         return size;
     }

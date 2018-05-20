@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Random;
 
@@ -17,6 +18,7 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.exceptions.QueueIsFullException;
 import com.wright.queue.linkedlist.Queue;
 
 /**
@@ -125,25 +127,34 @@ public class GUI {
     }
     
     private void create() {
-        queue.enqueue(getRandomNumber());
+        try {
+            queue.enqueue(getRandomNumber());
+        }
+        catch (QueueIsFullException e) {
+            MS_LOG.error(e);
+        }
         updateUI(ENQUEUE);
     }
     
     private void process() {
-        queue.dequeue();
+        try {
+            queue.dequeue();
+        }
+        catch (EmptyStackException e) {
+            MS_LOG.error("Stack is empty", e);
+        }
         updateUI(DEQUEUE);
     }
     
     private void updateUI(String type) {
         
-        int index = queue.getSize() == 0 ? queue.getSize() : queue.getSize() - 1;
+        int index = type.equals(ENQUEUE) ? queue.getSize() - 1 : queue.getSize();
         
         switch(type) {
             case ENQUEUE:
                 labels.get(index).setText(Integer.toString(queue.getBack()));
                 break;
-            case DEQUEUE:
-                index++;
+            case DEQUEUE: 
                 labels.get(index).setText(null);
                 break;
             default:
@@ -165,7 +176,6 @@ public class GUI {
     
     private int getRandomNumber() {
         Random rand = new Random();
-        int tezt = rand.nextInt(200);
-        return tezt;
+        return rand.nextInt(200);
     }
 }
