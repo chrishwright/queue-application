@@ -1,5 +1,11 @@
 package com.wright.queue.linkedlist;
 
+/**
+ * 
+ * @author christopherwright
+ *
+ * @param <T>
+ */
 public class Node<T> {
     
     private T data;

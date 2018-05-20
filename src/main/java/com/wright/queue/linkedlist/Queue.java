@@ -4,6 +4,9 @@ import java.util.EmptyStackException;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.exceptions.EmptyQueueException;
+import com.wright.queue.exceptions.QueueIsFullException;
+
 /**
  * 
  * @author christopherwright
@@ -18,6 +21,7 @@ public class Queue<T> {
     
     private int size = 0;
     private Node<T> list = null;
+    private Node<T> tail = null; // we need the tail to update the GUI with item at end of queue
     
     /**
      * adds a node to the back of the queue.
@@ -26,8 +30,12 @@ public class Queue<T> {
     public void enqueue(T data) {
         if (size == 0) {
             list = new Node<>(data);
+            tail = list;
             size++;
             return;
+        }
+        else if (size >= 5) {
+            throw new QueueIsFullException("The queue is full.");
         }
         
         Node<T> pointer = list;
@@ -37,6 +45,7 @@ public class Queue<T> {
         }
         
         pointer.setNextNode(new Node<T>(data));
+        tail = pointer.getNextNode();
         size++;
     }
     
@@ -45,10 +54,11 @@ public class Queue<T> {
      */
     public void dequeue() {
         if (size == 0) {
-            throw new EmptyStackException();
+            throw new EmptyQueueException("The queue is empty.");
         }
         
         list = list.getNextNode();
+        size--;
     }
     
     /**
@@ -61,6 +71,30 @@ public class Queue<T> {
             ms_log.info(pointer.getData());
             pointer = pointer.getNextNode();
         }
+    }
+    
+    /**
+     * returns the first item in the list
+     * @return the first item in the list
+     */
+    public T peek() {
+        return list.getData();
+    }
+    
+    /**
+     * returns the item in the back of the list
+     * @return the item in the back of the list
+     */
+    public T getBack() {
+        return tail.getData();
+    }
+    
+    /**
+     * returns the size of the list
+     * @return size of the list
+     */
+    public int getSize() {
+        return size;
     }
 
 }

@@ -25,7 +25,7 @@ mvn clean install
 Next run the application...
 
 ```
-java -jar target/Queue-jar-with-dependencies.jar
+java -jar target/Queue-App-jar-with-dependencies.jar
 ```
 
 ## Built With
