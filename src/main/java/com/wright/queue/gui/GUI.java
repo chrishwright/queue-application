@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.exceptions.EmptyQueueException;
 import com.wright.queue.exceptions.QueueIsFullException;
 import com.wright.queue.linkedlist.Queue;
 
@@ -131,7 +132,7 @@ public class GUI {
             queue.enqueue(getRandomNumber());
         }
         catch (QueueIsFullException e) {
-            MS_LOG.error(e);
+            MS_LOG.error("The queue is full", e);
         }
         updateUI(ENQUEUE);
     }
@@ -140,8 +141,8 @@ public class GUI {
         try {
             queue.dequeue();
         }
-        catch (EmptyStackException e) {
-            MS_LOG.error("Stack is empty", e);
+        catch (EmptyQueueException e) {
+            MS_LOG.error("Queue is empty", e);
         }
         updateUI(DEQUEUE);
     }

@@ -4,6 +4,7 @@ import java.util.EmptyStackException;
 
 import org.apache.log4j.Logger;
 
+import com.wright.queue.exceptions.EmptyQueueException;
 import com.wright.queue.exceptions.QueueIsFullException;
 
 /**
@@ -53,7 +54,7 @@ public class Queue<T> {
      */
     public void dequeue() {
         if (size == 0) {
-            throw new EmptyStackException();
+            throw new EmptyQueueException("The queue is empty.");
         }
         
         list = list.getNextNode();
