@@ -1,7 +1,6 @@
 # Queue Application
 
-An application that demonstrates a queue.  Just starting the project, but this sort of functionality
-could be used for processing system tasks as they come in, etc.
+An application that demonstrates a queue built with Java Swing.  Uses a Linked List data structure to provide the queue's support.
 
 ## Getting Started
 
