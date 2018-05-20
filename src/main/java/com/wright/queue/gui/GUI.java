@@ -5,7 +5,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Random;
 
@@ -156,23 +155,21 @@ public class GUI {
                 labels.get(index).setText(Integer.toString(queue.getBack()));
                 break;
             case DEQUEUE: 
+                updateProcessedList(labels.get(index).getText());
                 labels.get(index).setText(null);
                 break;
             default:
                 break;
         }
-        
-        // then update the textArea
-        StringBuilder items = new StringBuilder();
-        textArea.setText("");
-        
-        for (JLabel label : labels) {
-            if (label.getText() != null) {
-                items.append(label.getText() + "\n");
-            }
+    }
+    
+    private void updateProcessedList(String text) {
+        if (textArea.getText() == "" || textArea.getText() == null) {
+            textArea.setText(text + "\n");
+            return;
         }
         
-        textArea.setText(items.toString());
+        textArea.append(text + "\n");
     }
     
     private int getRandomNumber() {
