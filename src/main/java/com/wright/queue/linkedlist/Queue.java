@@ -1,6 +1,7 @@
 package com.wright.queue.linkedlist;
 
-import java.util.EmptyStackException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -12,7 +13,7 @@ import com.wright.queue.exceptions.QueueIsFullException;
  * @author christopherwright
  *
  */
-public class Queue<T> {
+public class Queue<T extends Comparable<T>> {
     
     /**
      * Logger
@@ -39,14 +40,25 @@ public class Queue<T> {
         }
         
         Node<T> pointer = list;
+        Node<T> prev = null;
         
-        while (pointer.getNextNode() != null) {
+        while (pointer != null) {
+            
+            if (pointer.getData().compareTo(data) < 0) {
+                if (prev == null) {
+                    addBefore(data, null, null);
+                }
+                else {
+                    addBefore(data, prev, pointer); // here we pass in pointer to be set as next node
+                }
+                return;
+            }
+            
+            prev = pointer;
             pointer = pointer.getNextNode();
         }
         
-        pointer.setNextNode(new Node<T>(data));
-        tail = pointer.getNextNode();
-        size++;
+        addLast(prev, data);
     }
     
     /**
@@ -62,6 +74,37 @@ public class Queue<T> {
     }
     
     /**
+     * 
+     * @param newNode
+     */
+    public void addLast(Node<T> prev, T newValue) {
+        final Node<T> tempNode = new Node<>(newValue);
+        prev.setNextNode(tempNode);
+        tempNode.setPrevNode(prev);
+        tail = tempNode;
+        size++;
+    }
+    
+    /**
+     * inserts the new item at the beginning of the list
+     * @param data
+     */
+    public void addBefore(T data, Node<T> prev, Node<T> next) {
+        final Node<T> temp = list; // maintain current list
+        
+        if (prev == null) {
+            list = new Node<>(data, temp);
+        }
+        else {
+            Node<T> newNode = new Node<>(data);
+            prev.setNextNode(newNode);
+            newNode.setPrevNode(prev);
+            newNode.setNextNode(next);
+        }
+        size++;
+    }
+    
+    /**
      * prints the list in the correct order.
      */
     public void printList() {
@@ -71,6 +114,18 @@ public class Queue<T> {
             ms_log.info(pointer.getData());
             pointer = pointer.getNextNode();
         }
+    }
+    
+    public List<T> getQueueAsList() {
+        List<T> tempList = new ArrayList<>();
+        Node<T> pointer = list;
+        
+        while (pointer != null) {
+            tempList.add(pointer.getData());
+            pointer = pointer.getNextNode();
+        }
+        
+        return tempList;
     }
     
     /**
@@ -96,5 +151,4 @@ public class Queue<T> {
     public int getSize() {
         return size;
     }
-
 }
