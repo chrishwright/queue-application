@@ -129,21 +129,21 @@ public class GUI {
     private void create() {
         try {
             queue.enqueue(getRandomNumber());
+            updateUI(ENQUEUE);
         }
         catch (QueueIsFullException e) {
             MS_LOG.error("The queue is full", e);
         }
-        updateUI(ENQUEUE);
     }
     
     private void process() {
         try {
             queue.dequeue();
+            updateUI(DEQUEUE);
         }
         catch (EmptyQueueException e) {
             MS_LOG.error("Queue is empty", e);
         }
-        updateUI(DEQUEUE);
     }
     
     private void updateUI(String type) {
@@ -152,10 +152,10 @@ public class GUI {
         
         switch(type) {
             case ENQUEUE:
-                labels.get(index).setText(Integer.toString(queue.getBack()));
+                updateCells(index);
                 break;
             case DEQUEUE: 
-                updateProcessedList(labels.get(index).getText());
+                updateTextArea(labels.get(index).getText());
                 labels.get(index).setText(null);
                 break;
             default:
@@ -163,7 +163,33 @@ public class GUI {
         }
     }
     
-    private void updateProcessedList(String text) {
+    private void updateCells(int index) {
+        List<Integer> tempList = queue.getQueueAsList();
+        
+        /**
+         * 
+         if (queue.getSize() == 1) {
+            labels.get(index).setText(Integer.toString(queue.peek()));
+            
+        }
+        
+        while (index > 0) {
+            int prevCellValue = Integer.parseInt(labels.get(index - 1).getText());
+            if (prevCellValue > queue.peek())
+                return;
+            labels.get(index).setText(Integer.toString(prevCellValue));
+            labels.get(index - 1).setText(Integer.toString(queue.peek()));
+            index--;
+        }
+        */
+        
+        for (int i = 0; i < tempList.size(); i++) {
+            labels.get(i).setText(Integer.toString((tempList.get(i))));
+        }
+        
+    }
+    
+    private void updateTextArea(String text) {
         if (textArea.getText() == "" || textArea.getText() == null) {
             textArea.setText(text + "\n");
             return;
